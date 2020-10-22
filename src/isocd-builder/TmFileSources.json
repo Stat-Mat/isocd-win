@@ -1,0 +1,47 @@
+{
+    "version": 1.0,
+    "cd32sources": [
+        {
+            "url": "https://archive.org/download/amiga-power-cd-1995-05/Amiga Power - Games Massive Volume 1 (1995-05)(Future Publishing)(GB)(Track 01 of 30)[!].iso",
+            "offset": 47104
+        },
+        {
+            "url": "https://archive.org/download/cd32-gamer-coverdisc-2/Amiga CD32 Gamer Vol. 02 (1994-06)(Paragon Publishing)(Track 01 of 09)[!][CDR00128].iso",
+            "offset": 43008
+        },
+        {
+            "url": "https://archive.org/download/cd32-gamer-coverdisc-3/Amiga CD32 Gamer Vol. 03 (1994-08)(Paragon Publishing)(Track 01 of 09)[!][CDR00171].iso",
+            "offset": 43008
+        },
+        {
+            "url": "https://archive.org/download/cd32-gamer-coverdisc-4/Amiga CD32 Gamer Vol. 04 (1994-09)(Paragon Publishing)(Track 01 of 12)[!][CDR00222].iso",
+            "offset": 43008
+        },
+        {
+            "url": "https://archive.org/download/cd32-gamer-coverdisc-5/Amiga CD32 Gamer Vol. 05 (1994-10-13)(Paragon Publishing)(GB)(Track 01 of 16)[!].iso",
+            "offset": 43008
+        }
+    ],
+    "cdtvsources": [
+        {
+            "url": "https://archive.org/download/global-chaos/Global Chaos (1992)(Hex)(Track 1 of 9)[!].iso",
+            "offset": 15890432
+        },
+        {
+            "url": "https://archive.org/download/psycho-killer/Psycho Killer (1992)(On-Line)(Track 1 of 3)[!][U2A2030UB].iso",
+            "offset": 24170496
+        },
+        {
+            "url": "https://archive.org/download/thomas-snowsuit-cdtv/Thomas' Snowsuit (1991)(Discis)(en-es)[!].iso",
+            "offset": 51200
+        },
+        {
+            "url": "https://archive.org/download/town-with-no-name/Town With No Name (1992)(On-line)(M6)(Track 1 of 3)[!][CDTV-TOWNS].iso",
+            "offset": 57708544
+        },
+        {
+            "url": "https://archive.org/download/advanced-military-systems/Advanced Military Systems (1991)(Dominion).iso",
+            "offset": 1126400
+        }
+    ]
+}
