@@ -323,8 +323,6 @@ namespace isocd_builder.Tests {
                 return;
             }
 
-            File.WriteAllBytes(@"c:\temp\amiga-new.iso", fileSystem.GetFile(basicOptions.OutputFile).Contents);
-
             Assert.Fail($"Amiga ISO file does not have the correct SHA-1 hash: {sha1Hash}");
         }
 
