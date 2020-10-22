@@ -17,7 +17,7 @@ namespace isocd_builder {
         public const int    CD32_TRADEMARK_FILE_SIZE = 2048;
         public const string CD32_TRADEMARK_FILE_SHA1_HASH = "c5ffcef2a5e33d2df606185823cd95d1c174d65f";
         public const string TRADEMARK_FILE_SOURCES_NAME = "TmFileSources.json";
-		public const string TRADEMARK_FILE_SOURCES_URL = "https://raw.githubusercontent.com/Stat-Mat/isocd-win/master/Source/isocd-builder/" + TRADEMARK_FILE_SOURCES_NAME;
+		public const string TRADEMARK_FILE_SOURCES_URL = "https://raw.githubusercontent.com/Stat-Mat/isocd-win/master/src/isocd-builder/" + TRADEMARK_FILE_SOURCES_NAME;
 
         public const string CACHE_DATA_NAME = "CR";
         public const string CACHE_DIR_NAME = "CD";
