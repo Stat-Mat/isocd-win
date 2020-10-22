@@ -312,45 +312,29 @@ namespace isocd_builder {
                 // Bibliographic File Identifier (37 bytes)
                 volumeDescriptorWriter.Seek(111, SeekOrigin.Current);
 
-                if(_usingRealFileSystem) {
-                    // Volume Creation Date and Time
-                    var now = DateTime.Now;
-                    volumeDescriptorWriter.Write(
-                        string.Format(
-                            "{0:D4}{1:D2}{2:D2}{3:D2}{4:D2}{5:D2}{6:D2}{7}",
-                            now.Year,
-                            now.Month,
-                            now.Day,
-                            now.Hour,
-                            now.Minute,
-                            now.Second,
-                            // ISOCD always stores hundredths of a second as zero
-                            0,
-                            // ISOCD ignores the GMT timezone offset and zeroes it
-                            '\x00'
-                        ).ToCharArray()
-                    );
-                }
-                else {
-                    // Volume Creation Date and Time
+                var now = DateTime.Now;
+
+                if(!_usingRealFileSystem) {
                     // As we know we're under test, just set an arbitrary date and time to allow the hash checks to pass
-                    var now = new DateTime(2000, 01, 01, 00, 00, 00);
-                    volumeDescriptorWriter.Write(
-                        string.Format(
-                            "{0:D4}{1:D2}{2:D2}{3:D2}{4:D2}{5:D2}{6:D2}{7}",
-                            now.Year,
-                            now.Month,
-                            now.Day,
-                            now.Hour,
-                            now.Minute,
-                            now.Second,
-                            // ISOCD always stores hundredths of a second as zero
-                            0,
-                            // ISOCD ignores the GMT timezone offset and zeroes it
-                            '\x00'
-                        ).ToCharArray()
-                    );
+                    now = new DateTime(2000, 01, 01, 00, 00, 00);
                 }
+
+                // Volume Creation Date and Time
+                volumeDescriptorWriter.Write(
+                    string.Format(
+                        "{0:D4}{1:D2}{2:D2}{3:D2}{4:D2}{5:D2}{6:D2}{7}",
+                        now.Year,
+                        now.Month,
+                        now.Day,
+                        now.Hour,
+                        now.Minute,
+                        now.Second,
+                        // ISOCD always stores hundredths of a second as zero
+                        0,
+                        // ISOCD ignores the GMT timezone offset and zeroes it
+                        '\x00'
+                    ).ToCharArray()
+                );
 
                 // All zeroed:
                 // Volume Modification Date and Time (17 bytes)

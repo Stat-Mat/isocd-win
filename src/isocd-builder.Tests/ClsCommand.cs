@@ -1,4 +1,5 @@
 ﻿namespace isocd_builder.Tests {
+    // This is the cls command from AmigaDOS
     public static class ClsCommand {
         public static byte[] cls = {
             0x00, 0x00, 0x03, 0xF3, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02,
