@@ -6,7 +6,7 @@ using System.Reflection;
 namespace isocd_builder {
     /// <summary>
     /// This class defines the core options for the ISO builder. It can be serialised to XML to save application settings. It also utilises CmdLineOptionAttribute to allow
-    /// for perscriptive command-line argument parsing. It also implements the IValitable interface to allow for instances of the class to validate the options provided.
+    /// for perscriptive command-line argument parsing. It also implements the IValidatable interface to allow for instances of the class to validate the options provided.
     /// </summary>
     [Serializable]
     public class Options : IValidatable {

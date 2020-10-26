@@ -60,7 +60,7 @@ namespace isocd_builder {
                                 ParentDirectoryNumber = parentDirectoryNumber,
                                 Path = f.FullName,
                                 Name = f.Name,
-                                DateStamp = GetExplorerFileDate(f.LastWriteTimeUtc)
+                                DateStamp = f.LastWriteTimeUtc
                             };
 
                             if (f is FileInfoBase) {
@@ -129,7 +129,7 @@ namespace isocd_builder {
             var fileInfo = _fileSystem.FileInfo.FromFileName(entry.Path);
 
             // Store date
-            entry.DateStamp = GetExplorerFileDate(fileInfo.LastWriteTimeUtc);
+            entry.DateStamp = fileInfo.LastWriteTimeUtc;
 
             // And size if a file
             if(entry.Type == EntryType.File) {
@@ -628,16 +628,6 @@ namespace isocd_builder {
             }
 
             return ((size + (isocd_builder_constants.SECTOR_SIZE - 1)) / isocd_builder_constants.SECTOR_SIZE) * isocd_builder_constants.SECTOR_SIZE;
-        }
-
-        /// <summary>
-        /// Converts a file/directory timestamp to UTC.
-        /// </summary>
-        DateTime GetExplorerFileDate(DateTime lastWriteTime) {
-            var localOffset = TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow);
-
-            // Return UTC timestamp
-            return (lastWriteTime + localOffset);
         }
 
         /// <summary>

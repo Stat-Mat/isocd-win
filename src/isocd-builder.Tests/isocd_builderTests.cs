@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using System;
-using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 
 namespace isocd_builder.Tests {
@@ -15,9 +14,9 @@ namespace isocd_builder.Tests {
         const int CORRECT_ISO_SIZE_WITH_CDTV_TRADEMARK_FILE = 143360;
 
         // These were taken from real files which were tested with an emulator
-        const string CORRECT_CD32_ISO_SHA1_HASH = "2b36a2c369906f7cf381b0f4587c96921fe7d25d";
-        const string CORRECT_CDTV_ISO_SHA1_HASH = "25ed08e850a50e6c78d4b8105ecaef2c6ec004eb";
-        const string CORRECT_AMIGA_ISO_SHA1_HASH = "3f3b7458290aa61f4f56d9fb3db5c625229bf620";
+        const string CORRECT_CD32_ISO_SHA1_HASH = "d096a0cf1696b5070da3b3b21f5b7238158bd991";
+        const string CORRECT_CDTV_ISO_SHA1_HASH = "986ca4efa12bd121a182e45174267fdbe1ca6bf3";
+        const string CORRECT_AMIGA_ISO_SHA1_HASH = "704b3e53ba7ac28a7834088d99eb235ee78eb9df";
 
         [Test]
         public void Validate_ShouldThrowInvalidOperationExceptionIfInputFolderDoesNotExist() {
