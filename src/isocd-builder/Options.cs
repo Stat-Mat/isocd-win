@@ -7,7 +7,7 @@ using System.Text;
 namespace isocd_builder {
     /// <summary>
     /// This class defines the core options for the ISO builder. It can be serialised to XML to save application settings. It also utilises CmdLineOptionAttribute to allow
-    /// for perscriptive command-line argument parsing. It also implements the IValidatable interface to allow for instances of the class to validate the options provided.
+    /// for prescriptive command-line argument parsing. It also implements the IValidatable interface to allow for instances of the class to validate the options provided.
     /// </summary>
     [Serializable]
     public class Options : IValidatable {
@@ -15,28 +15,28 @@ namespace isocd_builder {
             SetDefaults();
         }
 
-        [CmdLineOption(101, "i", "Input folder", "<path>", IsRequired = true)]
+        [CmdLineOption(101, "i", "Input folder", "<path>", MinLength = 1, IsRequired = true)]
         public string InputFolder { get; set; }
 
-        [CmdLineOption(102, "o", "Output file name (ISO)", "<file>", IsRequired = true)]
+        [CmdLineOption(102, "o", "Output file name (ISO)", "<file>", MinLength = 1, IsRequired = true)]
         public string OutputFile { get; set; }
 
         [CmdLineOption(103, "t", "Trademark file (CDTV or CD32)", "<file>")]
         public string TrademarkFile { get; set; }
 
-        [CmdLineOption(104, "v", "Volume identifier (32 bytes)", "<text>", MinLength = 1, MaxLength = 32, DefaultValue = isocd_builder_constants.VOLUME_IDENTIFIER)]
+        [CmdLineOption(104, "v", "Volume identifier (32 bytes)", "<text>", MaxLength = 32, DefaultValue = isocd_builder_constants.VOLUME_IDENTIFIER)]
         public string VolumeId { get; set; }
 
-        [CmdLineOption(105, "p", "Publisher identifier (128 bytes)", "<text>", MinLength = 1, MaxLength = 128, DefaultValue = "")]
+        [CmdLineOption(105, "p", "Publisher identifier (128 bytes)", "<text>", MaxLength = 128, DefaultValue = "")]
         public string PublisherId { get; set; }
 
-        [CmdLineOption(106, "a", "Application identifier (128 bytes)", "<text>", MinLength = 1, MaxLength = 128, DefaultValue = "")]
+        [CmdLineOption(106, "a", "Application identifier (128 bytes)", "<text>", MaxLength = 128, DefaultValue = "")]
         public string ApplicationId { get; set; }
 
-        [CmdLineOption(107, "vs", "Volume set identifier (128 bytes)", "<text>", MinLength = 1, MaxLength = 128, DefaultValue = "")]
+        [CmdLineOption(107, "vs", "Volume set identifier (128 bytes)", "<text>", MaxLength = 128, DefaultValue = "")]
         public string VolumeSetId { get; set; }
 
-        [CmdLineOption(108, "dp", "Data preparer identifier (128 bytes)", "<text>", MinLength = 1, MaxLength = 128, DefaultValue = "")]
+        [CmdLineOption(108, "dp", "Data preparer identifier (128 bytes)", "<text>", MaxLength = 128, DefaultValue = "")]
         public string DataPreparerId { get; set; }
 
         [CmdLineOption(109, "da", "CDFS data cache size (1 - 127)", "<value>", MinValue = 1, MaxValue = 127, DefaultValue = isocd_builder_constants.DEFAULT_DATA_CACHE)]
@@ -95,28 +95,26 @@ namespace isocd_builder {
 
                 // Check string properties
                 if(property.PropertyType == typeof(string)) {
-                    if(item.Value.IsRequired && string.IsNullOrWhiteSpace((string)property.GetValue(this))) {
+                    var stringValue = (string)property.GetValue(this);
+
+                    if((item.Value.IsRequired || item.Value.MinLength > 0) && string.IsNullOrWhiteSpace(stringValue)) {
                         errors.Add($"{item.Key} - a string value must be provided.");
                     }
-
-                    else if(!string.IsNullOrWhiteSpace((string)property.GetValue(this)) &&
-                        // If both min and max are zero, we don't check the length
-                        (item.Value.MinLength | item.Value.MaxLength) > 0 &&
-                    (
-                        ((string)property.GetValue(this)).Length < item.Value.MinLength ||
-                        ((string)property.GetValue(this)).Length > item.Value.MaxLength
-                    )) {
-                        errors.Add($"{item.Key} - the string value length must be between {item.Value.MinLength} and {item.Value.MaxLength}.");
+                    else if((item.Value.MinLength > item.Value.MaxLength && stringValue.Length < item.Value.MinLength) ||
+                            (item.Value.MaxLength > item.Value.MinLength && item.Value.MinLength == 0 && stringValue.Length > item.Value.MaxLength) ||
+                            (item.Value.MaxLength > item.Value.MinLength && item.Value.MinLength > 0 && (stringValue.Length < item.Value.MinLength || stringValue.Length > item.Value.MaxLength))
+                        ) {
+                            errors.Add($"{item.Key} - the string value length must be between {item.Value.MinLength} and {item.Value.MaxLength}.");
                     }
                 }
 
                 // Check int properties
-                else if(property.PropertyType == typeof(int) &&
-                    (
-                        ((int)property.GetValue(this)) < item.Value.MinValue ||
-                        ((int)property.GetValue(this)) > item.Value.MaxValue
-                    )) {
-                    errors.Add($"{item.Key} - The value must be between {item.Value.MinValue} and {item.Value.MaxValue}.");
+                else if(property.PropertyType == typeof(int)) {
+                    var intValue = (int)property.GetValue(this);
+
+                    if(intValue < item.Value.MinValue || intValue > item.Value.MaxValue) {
+                        errors.Add($"{item.Key} - the value must be between {item.Value.MinValue} and {item.Value.MaxValue}.");
+                    }
                 }
             }
 

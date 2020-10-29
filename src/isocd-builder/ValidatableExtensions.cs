@@ -15,21 +15,21 @@ namespace isocd_builder {
 
         public static ValidationResult ValidationResult(this IValidatable input) {
             // This avoids needing a null check in our code when we validate nullable objects
-            return input == null ? new ValidationResult(false, "Null input is invalid.") : input.Validate();
+            return input == null ? new ValidationResult(false, isocd_builder_constants.VALIDATION_NULL_INPUT_IS_INVALID_MESSAGE, 1) : input.Validate();
         }
 
         public static ValidationResult ToValidationResult(this List<string> input) {
             // Centralizes boilerplate needed to convert the list of errors into a single string.
             if(input == null) {
-                return new ValidationResult(false, "Null input is invalid.");
+                return new ValidationResult(false, isocd_builder_constants.VALIDATION_NULL_INPUT_IS_INVALID_MESSAGE, 1);
             }
 
             // Enumerate the errors
             var errors = input.ToList();
             var success = !errors.Any();
-            var message = success ? "Validation successful." : string.Join("\r\n", errors);
+            var message = success ? isocd_builder_constants.VALIDATION_SUCCESSFUL_MESSAGE : string.Join("\r\n", errors);
 
-            return new ValidationResult(success, message);
+            return new ValidationResult(success, message, errors.Count());
         }
     }
 }

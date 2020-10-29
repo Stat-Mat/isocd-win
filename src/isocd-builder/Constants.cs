@@ -59,5 +59,8 @@ namespace isocd_builder {
         public const string ARG_EXCEPTION_ARGUMENT_MUST_SPECIFY_VALID_VALUE = "Argument must specify a valid value.";
         public const string ARG_EXCEPTION_VALUE_PROVIDED_NOT_VALID_INTEGER = "The value provided was not a valid integer.";
         public const string ARG_EXCEPTION_VALUE_PROVIDED_NOT_RECOGNISED = "The value provided was not recognised.";
+
+        public const string VALIDATION_SUCCESSFUL_MESSAGE = "Validation successful.";
+        public const string VALIDATION_NULL_INPUT_IS_INVALID_MESSAGE = "Null input is invalid.";
     }
 }
