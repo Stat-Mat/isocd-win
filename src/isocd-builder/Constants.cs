@@ -46,5 +46,18 @@ namespace isocd_builder {
         public const int DEFAULT_FILE_LOCK = 40;
         public const int DEFAULT_FILE_HANDLE = 16;
         public const int DEFAULT_RETRIES = 32;
+
+        public const string ERROR_MESSAGE_INPUT_FOLDER_MUST_EXIST = "Provided input folder does not exist!";
+        public const string ERROR_MESSAGE_OUTPUT_FOLDER_MUST_EXIST = "Provided output folder does not exist!";
+        public const string ERROR_MESSAGE_TRADEMARK_FILE_MUST_EXIST = "Provided trademark file does not exist!";
+        public const string ERROR_MESSAGE_INPUT_FOLDER_IS_EMPTY = "Provided input folder is empty!";
+        public const string ERROR_MESSAGE_ISO_IMAGE_TOO_BIG = "ISO image size exceeds the space available on the disc!";
+
+        public const string ARG_EXCEPTION_UNRECOGNISED_ARGUMENT = "Unrecognised argument.";
+        public const string ARG_EXCEPTION_ARGUMENT_MUST_SPECIFY_STRING_VALUE = "Argument must specify a string value.";
+        public const string ARG_EXCEPTION_ARGUMENT_MUST_SPECIFY_INTEGER_VALUE = "Argument must specify an integer value.";
+        public const string ARG_EXCEPTION_ARGUMENT_MUST_SPECIFY_VALID_VALUE = "Argument must specify a valid value.";
+        public const string ARG_EXCEPTION_VALUE_PROVIDED_NOT_VALID_INTEGER = "The value provided was not a valid integer.";
+        public const string ARG_EXCEPTION_VALUE_PROVIDED_NOT_RECOGNISED = "The value provided was not recognised.";
     }
 }

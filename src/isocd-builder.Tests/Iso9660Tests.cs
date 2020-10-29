@@ -8,12 +8,12 @@ namespace isocd_builder.Tests {
     /// Contains all unit tests for the isocd-builder library.
     /// </summary>
     [TestFixture]
-    public class isocd_builderTests {
+    public class Iso9660Tests {
         const int CORRECT_ISO_SIZE_WITHOUT_TRADEMARK_FILE = 120832;
         const int CORRECT_ISO_SIZE_WITH_CD32_TRADEMARK_FILE = 122880;
         const int CORRECT_ISO_SIZE_WITH_CDTV_TRADEMARK_FILE = 143360;
 
-        // These were taken from real files which were tested with an emulator
+        // These were taken from real files which were validated as correct
         const string CORRECT_CD32_ISO_SHA1_HASH = "d096a0cf1696b5070da3b3b21f5b7238158bd991";
         const string CORRECT_CDTV_ISO_SHA1_HASH = "986ca4efa12bd121a182e45174267fdbe1ca6bf3";
         const string CORRECT_AMIGA_ISO_SHA1_HASH = "704b3e53ba7ac28a7834088d99eb235ee78eb9df";
@@ -38,7 +38,7 @@ namespace isocd_builder.Tests {
                 component.BuildIso(new BuildIsoWorker());
             }
             catch(InvalidOperationException ex) {
-                Assert.AreEqual("Provided input folder does not exist!", ex.Message);
+                Assert.AreEqual(isocd_builder_constants.ERROR_MESSAGE_INPUT_FOLDER_MUST_EXIST, ex.Message);
                 return;
             }
 
@@ -65,7 +65,7 @@ namespace isocd_builder.Tests {
                 component.BuildIso(new BuildIsoWorker());
             }
             catch(InvalidOperationException ex) {
-                Assert.AreEqual("Provided output folder does not exist!", ex.Message);
+                Assert.AreEqual(isocd_builder_constants.ERROR_MESSAGE_OUTPUT_FOLDER_MUST_EXIST, ex.Message);
                 return;
             }
 
@@ -89,7 +89,7 @@ namespace isocd_builder.Tests {
                 component.BuildIso(new BuildIsoWorker());
             }
             catch(InvalidOperationException ex) {
-                Assert.AreEqual("Provided trademark file does not exist!", ex.Message);
+                Assert.AreEqual(isocd_builder_constants.ERROR_MESSAGE_TRADEMARK_FILE_MUST_EXIST, ex.Message);
                 return;
             }
 
@@ -118,7 +118,7 @@ namespace isocd_builder.Tests {
                 component.BuildIso(new BuildIsoWorker());
             }
             catch(InvalidOperationException ex) {
-                Assert.AreEqual("Provided source folder is empty!", ex.Message);
+                Assert.AreEqual(isocd_builder_constants.ERROR_MESSAGE_INPUT_FOLDER_IS_EMPTY, ex.Message);
                 return;
             }
 
@@ -169,12 +169,7 @@ namespace isocd_builder.Tests {
             var component = new Iso9660(fileSystem, basicOptions);
             component.BuildIso(new BuildIsoWorker());
 
-            if(fileSystem.FileExists(basicOptions.OutputFile)) {
-                Assert.Pass("ISO file created successfully.");
-                return;
-            }
-
-            Assert.Fail("ISO file was not created.");
+            Assert.IsTrue(fileSystem.FileExists(basicOptions.OutputFile));
         }
 
         [Test]
@@ -194,12 +189,7 @@ namespace isocd_builder.Tests {
             var component = new Iso9660(fileSystem, basicOptions);
             component.BuildIso(new BuildIsoWorker());
 
-            if(fileSystem.FileInfo.FromFileName(basicOptions.OutputFile).Length == CORRECT_ISO_SIZE_WITH_CD32_TRADEMARK_FILE) {
-                Assert.Pass("CD32 ISO file was the correct size.");
-                return;
-            }
-
-            Assert.Fail("CD32 ISO file was not the correct size.");
+            Assert.AreEqual(fileSystem.FileInfo.FromFileName(basicOptions.OutputFile).Length, CORRECT_ISO_SIZE_WITH_CD32_TRADEMARK_FILE);
         }
 
         [Test]
@@ -219,12 +209,7 @@ namespace isocd_builder.Tests {
             var component = new Iso9660(fileSystem, basicOptions);
             component.BuildIso(new BuildIsoWorker());
 
-            if(fileSystem.FileInfo.FromFileName(basicOptions.OutputFile).Length == CORRECT_ISO_SIZE_WITH_CDTV_TRADEMARK_FILE) {
-                Assert.Pass("CDTV ISO file was the correct size.");
-                return;
-            }
-
-            Assert.Fail("CDTV ISO file was not the correct size.");
+            Assert.AreEqual(fileSystem.FileInfo.FromFileName(basicOptions.OutputFile).Length, CORRECT_ISO_SIZE_WITH_CDTV_TRADEMARK_FILE);
         }
 
         [Test]
@@ -240,12 +225,7 @@ namespace isocd_builder.Tests {
             var component = new Iso9660(fileSystem, basicOptions);
             component.BuildIso(new BuildIsoWorker());
 
-            if(fileSystem.FileInfo.FromFileName(basicOptions.OutputFile).Length == CORRECT_ISO_SIZE_WITHOUT_TRADEMARK_FILE) {
-                Assert.Pass("Amiga ISO file was the correct size.");
-                return;
-            }
-
-            Assert.Fail("Amiga ISO file was not the correct size.");
+            Assert.AreEqual(fileSystem.FileInfo.FromFileName(basicOptions.OutputFile).Length, CORRECT_ISO_SIZE_WITHOUT_TRADEMARK_FILE);
         }
 
         [Test]
@@ -266,13 +246,7 @@ namespace isocd_builder.Tests {
             component.BuildIso(new BuildIsoWorker());
 
             var sha1Hash = HashHelper.GetSHA1HashFromBuffer(fileSystem.GetFile(basicOptions.OutputFile).Contents);
-
-            if(sha1Hash == CORRECT_CD32_ISO_SHA1_HASH) {
-                Assert.Pass("CD32 ISO file has the correct SHA-1 hash.");
-                return;
-            }
-
-            Assert.Fail($"CD32 ISO file does not have the correct SHA-1 hash: {sha1Hash}");
+            Assert.AreEqual(sha1Hash, CORRECT_CD32_ISO_SHA1_HASH);
         }
 
         [Test]
@@ -293,13 +267,7 @@ namespace isocd_builder.Tests {
             component.BuildIso(new BuildIsoWorker());
 
             var sha1Hash = HashHelper.GetSHA1HashFromBuffer(fileSystem.GetFile(basicOptions.OutputFile).Contents);
-
-            if(sha1Hash == CORRECT_CDTV_ISO_SHA1_HASH) {
-                Assert.Pass("CDTV ISO file has the correct SHA-1 hash.");
-                return;
-            }
-
-            Assert.Fail($"CDTV ISO file does not have the correct SHA-1 hash: {sha1Hash}");
+            Assert.AreEqual(sha1Hash, CORRECT_CDTV_ISO_SHA1_HASH);
         }
 
         [Test]
@@ -316,137 +284,7 @@ namespace isocd_builder.Tests {
             component.BuildIso(new BuildIsoWorker());
 
             var sha1Hash = HashHelper.GetSHA1HashFromBuffer(fileSystem.GetFile(basicOptions.OutputFile).Contents);
-
-            if(sha1Hash == CORRECT_AMIGA_ISO_SHA1_HASH) {
-                Assert.Pass("Amiga ISO file has the correct SHA-1 hash.");
-                return;
-            }
-
-            Assert.Fail($"Amiga ISO file does not have the correct SHA-1 hash: {sha1Hash}");
-        }
-
-        [Test]
-        public void Validate_ShortArgsParsedCorrectly() {
-            string[] args = {
-                "-i", @"c:\amiga",
-                "-o", @"c:\build\cd32.iso",
-                "-t", "CD32.TM",
-                "-v", "STATMAT_GAMES",
-                "-p", "STATMAT",
-                "-a", "APP_ID",
-                "-vs", "VOL_SET_ID",
-                "-dp", "STATMAT",
-                "-da", "8",
-                "-dr", "16",
-                "-fl", "40",
-                "-fh", "16",
-                "-r", "32",
-                "-d",
-                "-tm",
-                "-f",
-                "-s",
-                "-ps", "cdr80",
-                "-ts", "cd32"
-            };
-
-            var fullArguments = new InputArguments(args);
-            var parsedFullOptions = fullArguments.ToObject<Options>();
-            var instantiatedFullOptions = DataHelpers.GetFullOptions();
-
-            Assert.AreEqual(parsedFullOptions.GetObjectAsJson(), instantiatedFullOptions.GetObjectAsJson());
-        }
-
-        [Test]
-        public void Validate_ShortUpperCaseArgsParsedCorrectly() {
-            string[] args = {
-                "-I", @"c:\amiga",
-                "-O", @"c:\build\cd32.iso",
-                "-T", "CD32.TM",
-                "-V", "STATMAT_GAMES",
-                "-P", "STATMAT",
-                "-A", "APP_ID",
-                "-VS", "VOL_SET_ID",
-                "-DP", "STATMAT",
-                "-DA", "8",
-                "-DR", "16",
-                "-FL", "40",
-                "-FH", "16",
-                "-R", "32",
-                "-D",
-                "-TM",
-                "-F",
-                "-S",
-                "-PS", "cdr80",
-                "-TS", "CD32"
-            };
-
-            var fullArguments = new InputArguments(args);
-            var parsedFullOptions = fullArguments.ToObject<Options>();
-            var instantiatedFullOptions = DataHelpers.GetFullOptions();
-
-            Assert.AreEqual(parsedFullOptions.GetObjectAsJson(), instantiatedFullOptions.GetObjectAsJson());
-        }
-
-        [Test]
-        public void Validate_LongArgsParsedCorrectly() {
-            string[] args = {
-                "-InputFolder", @"c:\amiga",
-                "-OutputFile", @"c:\build\cd32.iso",
-                "-TrademarkFile", "CD32.TM",
-                "-VolumeId", "STATMAT_GAMES",
-                "-PublisherId", "STATMAT",
-                "-ApplicationId", "APP_ID",
-                "-VolumeSetId", "VOL_SET_ID",
-                "-DataPreparerId", "STATMAT",
-                "-DataCache", "8",
-                "-DirCache", "16",
-                "-FileLock", "40",
-                "-FileHandle", "16",
-                "-Retries", "32",
-                "-DirectRead",
-                "-Trademark",
-                "-FastSearch",
-                "-SpeedIndependent",
-                "-PadSize", "CDR80",
-                "-TargetSystem", "CD32"
-            };
-
-            var fullArguments = new InputArguments(args);
-            var parsedFullOptions = fullArguments.ToObject<Options>();
-            var instantiatedFullOptions = DataHelpers.GetFullOptions();
-
-            Assert.AreEqual(parsedFullOptions.GetObjectAsJson(), instantiatedFullOptions.GetObjectAsJson());
-        }
-
-        [Test]
-        public void Validate_LongLowerCaseArgsParsedCorrectly() {
-            string[] args = {
-                "-inputfolder", @"c:\amiga",
-                "-outputfile", @"c:\build\cd32.iso",
-                "-trademarkfile", "CD32.TM",
-                "-volumeid", "STATMAT_GAMES",
-                "-publisherid", "STATMAT",
-                "-applicationid", "APP_ID",
-                "-volumesetid", "VOL_SET_ID",
-                "-datapreparerid", "STATMAT",
-                "-datacache", "8",
-                "-dircache", "16",
-                "-filelock", "40",
-                "-filehandle", "16",
-                "-retries", "32",
-                "-directread",
-                "-trademark",
-                "-fastsearch",
-                "-speedindependent",
-                "-padsize", "cdr80",
-                "-targetsystem", "cd32"
-            };
-
-            var fullArguments = new InputArguments(args);
-            var parsedFullOptions = fullArguments.ToObject<Options>();
-            var instantiatedFullOptions = DataHelpers.GetFullOptions();
-
-            Assert.AreEqual(parsedFullOptions.GetObjectAsJson(), instantiatedFullOptions.GetObjectAsJson());
+            Assert.AreEqual(sha1Hash, CORRECT_AMIGA_ISO_SHA1_HASH);
         }
     }
 }

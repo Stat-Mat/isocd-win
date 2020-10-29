@@ -64,7 +64,7 @@
     <Compile Include="BuilderSetupHelper.cs" />
     <Compile Include="TargetSystemType.cs" />
     <Compile Include="TmFileHelper.cs" />
-    <Compile Include="PadType.cs" />
+    <Compile Include="PadSizeType.cs" />
     <Compile Include="StreamExtensions.cs" />
     <Compile Include="DirectoryQueueEntry.cs" />
     <Compile Include="EntryType.cs" />

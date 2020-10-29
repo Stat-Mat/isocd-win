@@ -59,7 +59,8 @@
     <Compile Include="ClsCommand.cs" />
     <Compile Include="DataHelpers.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="isocd_builderTests.cs" />
+    <Compile Include="InputArgumentsTests.cs" />
+    <Compile Include="Iso9660Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -636,17 +636,17 @@ namespace isocd_builder {
         public void BuildIso(BuildIsoWorker worker) {
             // Check provided input folder exists
             if(!_fileSystem.Directory.Exists(options.InputFolder)) {
-                throw new InvalidOperationException("Provided input folder does not exist!");
+                throw new InvalidOperationException(isocd_builder_constants.ERROR_MESSAGE_INPUT_FOLDER_MUST_EXIST);
             }
 
             // Check provided output folder exists
             if(!_fileSystem.Directory.Exists(_fileSystem.Path.GetDirectoryName(options.OutputFile))) {
-                throw new InvalidOperationException("Provided output folder does not exist!");
+                throw new InvalidOperationException(isocd_builder_constants.ERROR_MESSAGE_OUTPUT_FOLDER_MUST_EXIST);
             }
 
             // Check provided trademark file exists
             if(!_fileSystem.File.Exists(options.TrademarkFile) && options.Trademark) {
-                throw new InvalidOperationException("Provided trademark file does not exist!");
+                throw new InvalidOperationException(isocd_builder_constants.ERROR_MESSAGE_TRADEMARK_FILE_MUST_EXIST);
             }
 
             fullEntries.Clear();
@@ -674,9 +674,9 @@ namespace isocd_builder {
                 Index = rootEntry.Index
             }, 1, worker);
 
-            // Check provided source folder isn't empty
+            // Check provided input folder isn't empty
             if(fullEntries.Count() == 1) {
-                throw new InvalidOperationException("Provided source folder is empty!");
+                throw new InvalidOperationException(isocd_builder_constants.ERROR_MESSAGE_INPUT_FOLDER_IS_EMPTY);
             }
 
             var pathTableSize = CalcPathTableSize();
@@ -715,29 +715,26 @@ namespace isocd_builder {
                 32;
 
             var maxSectors = 0;
-            var cdrType = string.Empty;
 
             switch(options.PadSize) {
-                case PadSize.Cdr74:
+                case PadSizeType.Cdr74:
                     maxSectors = isocd_builder_constants.MAX_SECTORS_CDR74;
-                    cdrType = "CD-R 74";
                     break;
                 default:
                     maxSectors = isocd_builder_constants.MAX_SECTORS_CDR80;
-                    cdrType = "CD-R 80";
                     break;
             }
 
             // Check data will not exceed max sectors
             if(totalSectors > maxSectors) {
-                throw new InvalidOperationException($"ISO image size would exceed the space available on a {cdrType} disc!");
+                throw new InvalidOperationException(isocd_builder_constants.ERROR_MESSAGE_ISO_IMAGE_TOO_BIG);
             }
 
             var paddingSectors = 0;
 
             // Pad image so as to fill a CD-R 74 or CD-R 80 disc if requested
             // This is done to maximize the performance of double speed reading on the CD32 drive
-            if(options.PadSize != PadSize.None) {
+            if(options.PadSize != PadSizeType.None) {
                 paddingSectors = maxSectors - totalSectors;
                 totalSectors = maxSectors;
 

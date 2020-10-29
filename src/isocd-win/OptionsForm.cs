@@ -16,7 +16,7 @@ namespace isocd_win {
             // Set data preparer max length based on our appended software string
             dataPreparerIdTextBox.MaxLength = 128 - isocd_builder_constants.ISOCDWIN_DATA_PREPARER_IDENTIFIER.Length;
 
-            imagePaddingComboBox.DataSource = Enum.GetValues(typeof(PadSize));
+            imagePaddingComboBox.DataSource = Enum.GetValues(typeof(PadSizeType));
         }
 
         void SettingsForm_Shown(object sender, EventArgs e) {
@@ -59,7 +59,7 @@ namespace isocd_win {
                 PublisherId = publisherIdTextBox.Text,
                 DataPreparerId = dataPreparerIdTextBox.Text,
                 ApplicationId = applicationIdTextBox.Text,
-                PadSize = (PadSize)imagePaddingComboBox.SelectedItem,
+                PadSize = (PadSizeType)imagePaddingComboBox.SelectedItem,
 
                 DataCache = int.Parse(dataCacheTextBox.Text),
                 DirCache = int.Parse(dirCacheTextBox.Text),

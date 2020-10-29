@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace isocd_builder {
     /// <summary>
@@ -65,8 +66,8 @@ namespace isocd_builder {
         [CmdLineOption(117, "s", "Use speed independent (allow reading at higher speeds with newer drives)", DefaultValue = false)]
         public bool SpeedIndependent { get; set; }
 
-        [CmdLineOption(118, "ps", "Place data in the outside tracks of the disc to increase reading speed", "<size>", DefaultValue = PadSize.None)]
-        public PadSize PadSize { get; set; }
+        [CmdLineOption(118, "ps", "Place data in the outside tracks of the disc to increase reading speed", "<size>", DefaultValue = PadSizeType.None)]
+        public PadSizeType PadSize { get; set; }
 
         [CmdLineOption(119, "ts", "CD32, CDTV or Amiga", "<system>", DefaultValue = TargetSystemType.CD32)]
         public TargetSystemType TargetSystem { get; set; }
@@ -87,20 +88,7 @@ namespace isocd_builder {
         public ValidationResult Validate() {
             var errors = new List<string>();
             var type = GetType();
-
-            // Get a dictionary of all the CmdLineOptionAttributes with the property name as key
-            var attributeDictionary = type
-            .GetProperties()
-            .Where(p => p.GetCustomAttribute<CmdLineOptionAttribute>() != null)
-            .Select(
-                p =>
-                new KeyValuePair<string, CmdLineOptionAttribute>(
-                    p.Name,
-                    p.GetCustomAttribute<CmdLineOptionAttribute>()
-                )
-            )
-            .OrderBy(p => p.Value.Id)
-            .ToDictionary(p => p.Key, p => p.Value);
+            var attributeDictionary = GetAttributeDictionary();
 
             foreach(var item in attributeDictionary) {
                 var property = type.GetProperty(item.Key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
@@ -108,7 +96,7 @@ namespace isocd_builder {
                 // Check string properties
                 if(property.PropertyType == typeof(string)) {
                     if(item.Value.IsRequired && string.IsNullOrWhiteSpace((string)property.GetValue(this))) {
-                        errors.Add($"{item.Key} - the string must be provided.");
+                        errors.Add($"{item.Key} - a string value must be provided.");
                     }
 
                     else if(!string.IsNullOrWhiteSpace((string)property.GetValue(this)) &&
@@ -118,7 +106,7 @@ namespace isocd_builder {
                         ((string)property.GetValue(this)).Length < item.Value.MinLength ||
                         ((string)property.GetValue(this)).Length > item.Value.MaxLength
                     )) {
-                        errors.Add($"{item.Key} - the string length must be between {item.Value.MinLength} and {item.Value.MaxLength}.");
+                        errors.Add($"{item.Key} - the string value length must be between {item.Value.MinLength} and {item.Value.MaxLength}.");
                     }
                 }
 
@@ -135,6 +123,62 @@ namespace isocd_builder {
             // ToValidationResult is an extension method
             var validatonResult = errors.ToValidationResult();
             return validatonResult;
+        }
+
+        /// <summary>
+        /// Gets a dictionary of all the CmdLineOptionAttributes in this class with the property names as the key.
+        /// </summary>
+        Dictionary<string, CmdLineOptionAttribute> GetAttributeDictionary() {
+            return GetType()
+            .GetProperties()
+            .Where(p => p.GetCustomAttribute<CmdLineOptionAttribute>() != null)
+            .Select(
+                p =>
+                new KeyValuePair<string, CmdLineOptionAttribute>(
+                    p.Name,
+                    p.GetCustomAttribute<CmdLineOptionAttribute>()
+                )
+            )
+            .OrderBy(p => p.Value.Id)
+            .ToDictionary(p => p.Key, p => p.Value);
+        }
+
+        /// <summary>
+        /// Overidden ToString() method which outputs all available options with a CmdLineOptionAttribute - can be used to show help.
+        /// </summary>
+        public override string ToString() {
+            var attributeDictionary = GetAttributeDictionary();
+
+            var builder = new StringBuilder();
+            var lenLongestName = 0;
+            var lenLongestShortName = 0;
+
+            foreach(var item in attributeDictionary) {
+                if(item.Key.Length + item.Value.ParamName?.Length > lenLongestName) {
+                    lenLongestName = (item.Key.Length + item.Value.ParamName?.Length).Value;
+                }
+
+                if(item.Value.ShortName.Length + item.Value.ParamName?.Length > lenLongestShortName) {
+                    lenLongestShortName = (item.Value.ShortName.Length + item.Value.ParamName?.Length).Value;
+                }
+            }
+
+            foreach(var item in attributeDictionary.Where(a => a.Value.IsRequired == true)) {
+                builder.AppendLine($" -{item.Key.ToLower()} {item.Value.ParamName}");
+            }
+
+            builder.AppendLine(" [MORE OPTIONS]");
+            builder.AppendLine($"Full options list:");
+
+            foreach(var item in attributeDictionary) {
+                var param = !string.IsNullOrWhiteSpace(item.Value.ParamName) ? $" {item.Value.ParamName}" : "";
+                var longPad = (lenLongestName - (item.Key.Length + param.Length - 1));
+                var shortPad = (lenLongestShortName - (item.Value.ShortName.Length + param.Length - 1));
+
+                builder.AppendLine($"  -{item.Value.ShortName}{param},{string.Empty.PadLeft(shortPad, ' ')} -{item.Key.ToLower()}{param} {string.Empty.PadLeft(longPad, ' ')}{item.Value.Description}");
+            }
+
+            return builder.ToString();
         }
     }
 }
