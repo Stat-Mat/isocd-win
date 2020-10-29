@@ -4,8 +4,8 @@ using System.IO.Abstractions.TestingHelpers;
 
 namespace isocd_builder.Tests {
     /// <summary>
-    /// The isocd-builder testing class.
-    /// Contains all unit tests for the isocd-builder library.
+    /// The Iso9660 testing class.
+    /// Contains all unit tests for the Iso9660 class.
     /// </summary>
     [TestFixture]
     public class Iso9660Tests {

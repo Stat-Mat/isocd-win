@@ -2,6 +2,11 @@
 using System;
 
 namespace isocd_builder.Tests {
+    /// <summary>
+    /// The InputArguments testing class.
+    /// Contains all unit tests for the InputArguments class.
+    /// </summary>
+    [TestFixture]
     public class InputArgumentsTests {
         [Test]
         public void Validate_LongArgsWithLeadingHyphenParsedCorrectly() {
