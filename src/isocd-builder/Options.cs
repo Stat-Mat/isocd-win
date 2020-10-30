@@ -175,7 +175,7 @@ namespace isocd_builder {
             }
 
             foreach(var item in attributeDictionary.Where(a => a.Value.IsRequired == true)) {
-                builder.AppendLine($" -{item.Key.ToLower()} {item.Value.ParamName}");
+                builder.Append($" -{item.Key.ToLower()} {item.Value.ParamName}");
             }
 
             builder.AppendLine(" [MORE OPTIONS]");

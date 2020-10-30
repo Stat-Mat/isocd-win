@@ -62,6 +62,7 @@
     <Compile Include="BuilderSetupResult.cs" />
     <Compile Include="CmdLineOptionAttribute.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="MapperExtensions.cs" />
     <Compile Include="DownloadHelper.cs" />
     <Compile Include="HashHelper.cs" />
     <Compile Include="InputArguments.cs" />

@@ -47,33 +47,28 @@ namespace isocd_win {
 
         void OkButton_Click(object sender, EventArgs e) {
             // Create a new instance of the options object so that we can validate it before updating the original
-            var newOptions = new ExtendedOptions {
-                // These are not set here, so just set them the values in the provided ptions to allow the validation to work
-                InputFolder = _options.InputFolder,
-                OutputFile = _options.OutputFile,
-                TrademarkFile = _options.TrademarkFile,
-                Trademark = _options.Trademark,
+            var newOptions = new ExtendedOptions();
+            _options.CopyMatchingProperties(newOptions);
 
-                VolumeId = volumeIdTextBox.Text,
-                VolumeSetId = volumeSetIdTextBox.Text,
-                PublisherId = publisherIdTextBox.Text,
-                DataPreparerId = dataPreparerIdTextBox.Text,
-                ApplicationId = applicationIdTextBox.Text,
-                PadSize = (PadSizeType)imagePaddingComboBox.SelectedItem,
+            newOptions.VolumeId = volumeIdTextBox.Text;
+            newOptions.VolumeSetId = volumeSetIdTextBox.Text;
+            newOptions.PublisherId = publisherIdTextBox.Text;
+            newOptions.DataPreparerId = dataPreparerIdTextBox.Text;
+            newOptions.ApplicationId = applicationIdTextBox.Text;
+            newOptions.PadSize = (PadSizeType)imagePaddingComboBox.SelectedItem;
 
-                DataCache = int.Parse(dataCacheTextBox.Text),
-                DirCache = int.Parse(dirCacheTextBox.Text),
-                FileLock = int.Parse(fileLockTextBox.Text),
-                FileHandle = int.Parse(fileHandleTextBox.Text),
-                Retries = int.Parse(retriesTextBox.Text),
-                DirectRead = directReadCheckBox.Checked,
-                FastSearch = fastSearchCheckBox.Checked,
-                SpeedIndependent = speedIndCheckBox.Checked,
+            newOptions.DataCache = int.Parse(dataCacheTextBox.Text);
+            newOptions.DirCache = int.Parse(dirCacheTextBox.Text);
+            newOptions.FileLock = int.Parse(fileLockTextBox.Text);
+            newOptions.FileHandle = int.Parse(fileHandleTextBox.Text);
+            newOptions.Retries = int.Parse(retriesTextBox.Text);
+            newOptions.DirectRead = directReadCheckBox.Checked;
+            newOptions.FastSearch = fastSearchCheckBox.Checked;
+            newOptions.SpeedIndependent = speedIndCheckBox.Checked;
 
-                PlaySounds = playSoundsCheckBox.Checked,
-                WinUAETest = WinUAETestCheckBox.Checked,
-                WinUAEPath = winUAEPathTextBox.Text
-            };
+            newOptions.PlaySounds = playSoundsCheckBox.Checked;
+            newOptions.WinUAETest = WinUAETestCheckBox.Checked;
+            newOptions.WinUAEPath = winUAEPathTextBox.Text;
 
             if(!newOptions.IsValid()) {
                 MessageBox.Show(newOptions.ValidationResult().Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -81,7 +76,7 @@ namespace isocd_win {
             }
 
             // Validation was successful, so update the original settings object
-            _options = newOptions;
+            newOptions.CopyMatchingProperties(_options);
 
             Close();
         }
