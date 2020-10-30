@@ -69,8 +69,21 @@ namespace isocd_builder {
         [CmdLineOption(118, "ps", "Place data in the outside tracks of the disc to increase reading speed", "<size>", DefaultValue = PadSizeType.None)]
         public PadSizeType PadSize { get; set; }
 
+        TargetSystemType targetSystem;
+
         [CmdLineOption(119, "ts", "CD32, CDTV or Amiga", "<system>", DefaultValue = TargetSystemType.CD32)]
-        public TargetSystemType TargetSystem { get; set; }
+        public TargetSystemType TargetSystem {
+            get {
+                return targetSystem;
+            }
+
+            set {
+                targetSystem = value;
+
+                // If the option is set to Amiga, then set the Trademark flag to false, otherwise true
+                Trademark = targetSystem != TargetSystemType.Amiga;
+            }
+        }
 
         /// <summary>
         /// This sets each property to the default value specified in its CmdLineOptionAttribute if present.

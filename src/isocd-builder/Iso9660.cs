@@ -3,15 +3,29 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+
+#if !ACTUAL_RELEASE
+
 using System.IO.Abstractions;
+
+#else
+
+using FileInfoBase = System.IO.FileInfo;
+using _fileSystem = System.IO;
+
+#endif
 
 namespace isocd_builder {
     /// <summary>
     /// This class provides the core functionality to produce an ISO 9660 file system ISO image compatible with AmigaDOS.
     /// </summary>
     public class Iso9660 {
+
+#if !ACTUAL_RELEASE
         readonly IFileSystem _fileSystem;
-        readonly bool _usingRealFileSystem;
+#endif
+
+        bool _usingMockFileSystem = false;
 
         int indexCounter = 0;
         ushort directoryNumber = 1;
@@ -22,9 +36,10 @@ namespace isocd_builder {
 
         readonly Options options;
 
+#if !ACTUAL_RELEASE
+
         // This is our standard constructor in production which uses the the normal System.IO namespace
         public Iso9660(Options options) : this(new FileSystem(), options) {
-            _usingRealFileSystem = true;
         }
 
         // This is our testing constructor which uses the System.IO.Abstractions namespace to allow us to use a mock file system for unit testing
@@ -39,7 +54,16 @@ namespace isocd_builder {
 
             _fileSystem = fileSystem;
             this.options = options;
+            _usingMockFileSystem = true;
         }
+
+#else
+
+        public Iso9660(Options options) {
+            this.options = options;
+        }
+
+#endif
 
         /// <summary>
         /// Recursively scans a folder structure to find all files and directories present and generate appropriate records for the ISO 9660 filesystem.
@@ -49,7 +73,12 @@ namespace isocd_builder {
                 worker.Token.ThrowIfCancellationRequested();
 
                 var entries = new List<Iso9660Entry>();
+
+#if !ACTUAL_RELEASE
                 var dirInfo = _fileSystem.DirectoryInfo.FromDirectoryName(parentDir.Path);
+#else
+                var dirInfo = new DirectoryInfo(parentDir.Path);
+#endif
 
                 entries.AddRange(
                     dirInfo.EnumerateFileSystemInfos()
@@ -126,7 +155,11 @@ namespace isocd_builder {
         /// Gets the info for a file or directory from the source file system.
         /// </summary>
         void GetEntryInfo(Iso9660Entry entry) {
+#if !ACTUAL_RELEASE
             var fileInfo = _fileSystem.FileInfo.FromFileName(entry.Path);
+#else
+            var fileInfo = new FileInfoBase(entry.Path);
+#endif
 
             // Store date
             entry.DateStamp = fileInfo.LastWriteTimeUtc;
@@ -314,7 +347,7 @@ namespace isocd_builder {
 
                 var now = DateTime.Now;
 
-                if(!_usingRealFileSystem) {
+                if(_usingMockFileSystem) {
                     // As we know we're under test, just set an arbitrary date and time to allow the hash checks to pass
                     now = new DateTime(2000, 01, 01, 00, 00, 00);
                 }
